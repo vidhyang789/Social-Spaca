@@ -8,6 +8,7 @@ import com.example.blog_app.blog_app_exception.ResourceNotFoundException;
 import com.example.blog_app.blog_app_payloads.userdto;
 import com.example.blog_app.blog_app_repositories.userrepo;
 import com.example.blog_app.blog_app_services.userservice;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +19,9 @@ public class userserviceimpl implements userservice {
 	
 	@Autowired
 	private userrepo ur;
+
+	@Autowired
+	private ModelMapper modelMapper;
 
 	@Override
 	public userdto createuser(userdto userdto) {
@@ -64,21 +68,11 @@ public class userserviceimpl implements userservice {
 	}
 	
 	private User dtotouser(userdto Userdto) {
-		User user = new User();
-		user.setId(Userdto.getId());
-		user.setName(Userdto.getName());
-		user.setEmail(Userdto.getEmail());
-		user.setPassword(Userdto.getPassword());
-		user.setAbout(Userdto.getAbout());
+		User user = modelMapper.map(Userdto,User.class);
 		return user;
 	}
 	private userdto usertodto(User user) {
-		userdto Userdto = new userdto();
-		Userdto.setId(user.getId());
-		Userdto.setName(user.getName());
-		Userdto.setEmail(user.getEmail());
-		Userdto.setPassword(user.getPassword());
-		Userdto.setAbout(user.getAbout());
+		userdto Userdto = modelMapper.map(user,userdto.class);
 		return Userdto;
 	}
 

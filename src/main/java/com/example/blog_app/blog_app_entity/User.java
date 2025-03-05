@@ -1,10 +1,12 @@
 package com.example.blog_app.blog_app_entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+
+import java.util.Set;
 
 @Entity
 @Table(name = "users")
@@ -14,10 +16,22 @@ public class User {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private int id;
 
-	public User(int id, String email, String name, String password, String about) {
+	@OneToMany(mappedBy = "user",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+	private Set<Post> posts;
+
+	public Set<Post> getPosts() {
+		return posts;
+	}
+
+	public void setPosts(Set<Post> posts) {
+		this.posts = posts;
+	}
+
+	public User(int id, Set<Post> posts, String name, String email, String password, String about) {
 		this.id = id;
-		this.email = email;
+		this.posts = posts;
 		this.name = name;
+		this.email = email;
 		this.password = password;
 		this.about = about;
 	}
@@ -65,14 +79,17 @@ public class User {
 		return about;
 	}
 
+	@NotEmpty
+	@Size(min = 3,message = "name must have atleast 3 chars !!")
 	private String name;
 	
-	
+	@Email(message = "enter valid email !!")
 	private String email;
 	
-	
+	@NotEmpty
+	@Size(min = 3,max = 10,message = "password must have atleast 3 chars and atmost 10 chars !!")
 	private String password;
 	
-	
+	@NotEmpty
 	private String about;
 }
