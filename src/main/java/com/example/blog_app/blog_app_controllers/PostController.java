@@ -21,7 +21,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
-@Controller
+@RestController
 @RequestMapping("post")
 public class PostController {
 
@@ -106,5 +106,12 @@ public class PostController {
         response.setContentType(MediaType.IMAGE_JPEG_VALUE);
         StreamUtils.copy(resource,response.getOutputStream());
     }
+
+    @GetMapping("/user/{userId}/liked-posts")
+    public ResponseEntity<List<PostDto>> getLikedPosts(@PathVariable int userId) {
+        List<PostDto> likedPosts = postservice.getPostsLikedByUser(userId);
+        return ResponseEntity.ok(likedPosts);
+    }
+
 
 }

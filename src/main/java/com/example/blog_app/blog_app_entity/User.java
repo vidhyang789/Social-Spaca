@@ -3,10 +3,18 @@ package com.example.blog_app.blog_app_entity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import org.hibernate.validator.constraints.UniqueElements;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "users")
@@ -19,6 +27,66 @@ public class User {
 	@OneToMany(mappedBy = "user",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
 	private Set<Post> posts;
 
+	@OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
+	private Set<Comment> comments;
+
+	@OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
+	private Set<Likes> likes;
+
+	@OneToMany(mappedBy = "follower",cascade = CascadeType.ALL)
+	private Set<Followers> followers;
+
+	@OneToMany(mappedBy = "following",cascade = CascadeType.ALL)
+	private Set<Followers> following;
+
+	@ManyToMany(fetch = FetchType.EAGER)
+	@JoinTable(
+			name = "user_role",
+			joinColumns = @JoinColumn(name = "user_id"),
+			inverseJoinColumns = @JoinColumn(name = "role_id")
+	)
+	private Set<Role> roles = new HashSet<>();
+
+	public Set<Role> getRoles() {
+		return roles;
+	}
+
+	public void setRoles(Set<Role> roles) {
+		this.roles = roles;
+	}
+
+	public Set<Followers> getFollowers() {
+		return followers;
+	}
+
+	public void setFollowers(Set<Followers> followers) {
+		this.followers = followers;
+	}
+
+	public Set<Followers> getFollowing() {
+		return following;
+	}
+
+	public void setFollowing(Set<Followers> following) {
+		this.following = following;
+	}
+
+	public Set<Likes> getLikes() {
+		return likes;
+	}
+
+	public void setLikes(Set<Likes> likes) {
+		this.likes = likes;
+	}
+
+	public Set<Comment> getComments() {
+		return comments;
+	}
+
+	public void setComments(Set<Comment> comments) {
+		this.comments = comments;
+	}
+
 	public Set<Post> getPosts() {
 		return posts;
 	}
@@ -27,14 +95,6 @@ public class User {
 		this.posts = posts;
 	}
 
-	public User(int id, Set<Post> posts, String name, String email, String password, String about) {
-		this.id = id;
-		this.posts = posts;
-		this.name = name;
-		this.email = email;
-		this.password = password;
-		this.about = about;
-	}
 
 	public User() {
 	}
@@ -71,10 +131,6 @@ public class User {
 		return email;
 	}
 
-	public String getPassword() {
-		return password;
-	}
-
 	public String getAbout() {
 		return about;
 	}
@@ -84,12 +140,17 @@ public class User {
 	private String name;
 	
 	@Email(message = "enter valid email !!")
+	@Column(nullable = false, unique = true)
 	private String email;
 	
 	@NotEmpty
-	@Size(min = 3,max = 10,message = "password must have atleast 3 chars and atmost 10 chars !!")
+	@Size(min = 3,max = 255,message = "password must have atleast 3 chars and atmost 255 chars !!")
 	private String password;
-	
+
 	@NotEmpty
 	private String about;
+
+	public String getPassword() {
+		return password;
+	}
 }

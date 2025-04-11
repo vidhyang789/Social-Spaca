@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 public interface userservice {
+	userdto registeruser(userdto Userdto);
 	userdto createuser(userdto user);
 	userdto updateuser(userdto user,int id);
 	userdto findbyid(int id);

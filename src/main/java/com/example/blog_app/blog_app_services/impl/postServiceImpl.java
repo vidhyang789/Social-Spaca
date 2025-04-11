@@ -1,11 +1,13 @@
 package com.example.blog_app.blog_app_services.impl;
 
+import com.example.blog_app.blog_app_entity.Likes;
 import com.example.blog_app.blog_app_entity.Post;
 import com.example.blog_app.blog_app_entity.User;
 import com.example.blog_app.blog_app_entity.Category;
 import com.example.blog_app.blog_app_exception.ResourceNotFoundException;
 import com.example.blog_app.blog_app_payloads.PostDto;
 import com.example.blog_app.blog_app_payloads.PostResponse;
+import com.example.blog_app.blog_app_repositories.LikesRepo;
 import com.example.blog_app.blog_app_repositories.categoryRepo;
 import com.example.blog_app.blog_app_repositories.postrepo;
 import com.example.blog_app.blog_app_repositories.userrepo;
@@ -35,6 +37,9 @@ public class postServiceImpl implements PostService {
 
     @Autowired
     private categoryRepo catrepo;
+
+    @Autowired
+    private LikesRepo likerepo;
 
 
     @Override
@@ -118,5 +123,20 @@ public class postServiceImpl implements PostService {
         List<Post> titled = Postrepo.findByTitleContaining(target);
         List<PostDto> alldto = titled.stream().map(post->modelMapper.map(post, PostDto.class)).collect(Collectors.toList());
         return alldto;
+    }
+
+    @Override
+    public List<PostDto> getPostsLikedByUser(int userId) {
+        User user = Userrepo.findById(userId).orElseThrow(() -> new ResourceNotFoundException("user","user id",userId));
+
+        List<Post> likedPosts = likerepo.findAll()
+                .stream()
+                .filter(like -> like.getUser().getId() == userId && like.isIsliked())
+                .map(Likes::getPost)
+                .toList();
+
+        List<PostDto> likedDtos = likedPosts.stream().map(post -> modelMapper.map(post,PostDto.class)).toList();
+
+        return likedDtos;
     }
 }

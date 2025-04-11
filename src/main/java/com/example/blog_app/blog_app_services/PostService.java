@@ -25,4 +25,6 @@ public interface PostService {
 
     List<PostDto> searchPost(String target);
 
+    public List<PostDto> getPostsLikedByUser(int userId);
+
 }

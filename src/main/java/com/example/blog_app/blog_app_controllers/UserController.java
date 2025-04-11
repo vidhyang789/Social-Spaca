@@ -2,10 +2,12 @@ package com.example.blog_app.blog_app_controllers;
 
 import com.example.blog_app.blog_app_payloads.userdto;
 import com.example.blog_app.blog_app_services.userservice;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -13,6 +15,7 @@ import java.util.List;
 
 
 @RestController
+@SecurityRequirement(name = "BearerAuth")
 @RequestMapping("users")
 public class UserController {
 	
@@ -43,6 +46,7 @@ public class UserController {
 		return new ResponseEntity<>(Userdto,HttpStatus.OK);
 	}
 
+	@PreAuthorize("hasRole('ADMIN')")
 	@DeleteMapping("id/{id}")
 	public ResponseEntity<?> deletebyid(@PathVariable int id){
 		Userservice.deleteuser(id);

@@ -3,42 +3,57 @@ package com.example.blog_app.blog_app_entity;
 import jakarta.persistence.*;
 
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "post")
 public class Post {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer postid;
+    private Integer id;
     private String title;
     private String content;
     private String postimage;
     private Date addeddate;
 
+    @OneToMany(mappedBy = "post",cascade = CascadeType.ALL)
+    private Set<Likes> likes;
+
+    public Set<Likes> getLikes() {
+        return likes;
+    }
+
+    public void setLikes(Set<Likes> likes) {
+        this.likes = likes;
+    }
+
     @ManyToOne
     private Category category;
+
     @ManyToOne
     private User user;
+
+    @OneToMany(mappedBy = "post",cascade = CascadeType.ALL)
+    private Set<Comment> comments = new HashSet<>();
+
+    public Set<Comment> getComments() {
+        return comments;
+    }
+
+    public void setComments(Set<Comment> comments) {
+        this.comments = comments;
+    }
 
     public Post() {
     }
 
-    public Post(Integer postid, String title, String content, String postimage, Date addeddate, Category category, User user) {
-        this.postid = postid;
-        this.title = title;
-        this.content = content;
-        this.postimage = postimage;
-        this.addeddate = addeddate;
-        this.category = category;
-        this.user = user;
+    public Integer getId() {
+        return id;
     }
 
-    public Integer getPostid() {
-        return postid;
-    }
-
-    public void setPostid(Integer postid) {
-        this.postid = postid;
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public String getTitle() {

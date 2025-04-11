@@ -1,20 +1,18 @@
 package com.example.blog_app.blog_app_payloads;
 
-import com.example.blog_app.blog_app_entity.Category;
-import com.example.blog_app.blog_app_entity.User;
-
 import java.util.Date;
+import java.util.Set;
 
 public class PostDto {
-    public int getPostid() {
-        return postid;
+    public Integer getId() {
+        return id;
     }
 
-    public void setPostid(int postid) {
-        this.postid = postid;
+    public void setId(Integer id) {
+        this.id = id;
     }
 
-    private int postid;
+    private Integer id;
     private String title;
     private String content;
     private String postimage;
@@ -23,6 +21,26 @@ public class PostDto {
     private categoryDto Category;
 
     private userdto user;
+
+    private Set<CommentDto> comments;
+
+    private Set<LikesDto> likes;
+
+    public Set<LikesDto> getLikes() {
+        return likes;
+    }
+
+    public void setLikes(Set<LikesDto> likes) {
+        this.likes = likes;
+    }
+
+    public Set<CommentDto> getComments() {
+        return comments;
+    }
+
+    public void setComments(Set<CommentDto> comments) {
+        this.comments = comments;
+    }
 
     public PostDto() {
     }
